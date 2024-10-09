@@ -1,0 +1,84 @@
+---
+title: "Homework16"
+format: html
+editor: visual
+author: Alexis Parent 
+---
+
+```{r}
+# Set up R 
+rm(list = ls())
+library (tidyverse)
+library(ggplot2)
+library(here)
+```
+
+```{r}
+# Read in csv file 
+cover <- read.csv("/Users/alexisparent/Desktop/BIOSTAT/Parent-Biostats-Homework/Data/donnerville_percent_cover.csv")
+```
+
+```{r}
+#Look at data set
+glimpse(cover)
+
+#Get summary stats
+summary(cover)
+```
+
+```{r}
+# Change into factor variables
+Site <- factor(cover$Site)
+Plot.type <- factor(cover$Plot.type)
+cover_type <- factor(cover$cover_type)
+```
+
+```{r}
+# Make date into a data variable
+library(lubridate)
+cover$date <- dmy(cover$Date)
+```
+
+```{r}
+# Error checking and Fix
+fix <- which(cover$Site == "donnerville 1", "Donnerville 1", "DONNERVILLE - 1")
+cover$Site[fix] <- "Donnerville 1"
+
+fix2 <- which(cover$Site == "donnerville 2")
+cover$Site[fix2] <- "Donnerville 2"
+
+fix3 <- which(cover$Site == "donnerville-3")
+cover$Site[fix3] <- "Donnerville 3"
+
+cover$Site <- factor(cover$Site)
+
+fix4 <- which(cover$cover_type == "bare", "Bare")
+cover$cover_type[fix4] <- "Bare"
+
+fix5 <- which(cover$cover_type == "Bryophytes", "bryophytes",)
+cover$cover_type[fix4] <- "Bryophytes"
+
+fix6 <- which(cover$cover_type == "vasc", "Vascular")
+cover$cover_type[fix6] <- "Vascular"
+
+cover$cover_type <- factor(cover$cover_type)
+```
+
+```{r}
+# Average percent cover by cover type(bare, bryophytes, vascular plants) for Donnerville 1 
+bare <- data.frame(n = c(95.0, 95.0, 70.0, 50.0))
+mean(bare$n)
+  
+bryophytes <- data.frame(n= c(0, 0, 10))
+mean(bryophytes$n)
+
+vascular <- data.frame(n = c(5.0, 30.0, 40.0))
+mean(vascular$n)
+
+```
+
+```{r}
+# Average percent vascular plant cover across all sites. 
+
+mean(cover$percent[cover$cover_type == "Vascular"])
+```
