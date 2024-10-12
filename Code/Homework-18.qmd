@@ -1,0 +1,83 @@
+---
+title: "Homework-18"
+date: 12-Oct-2024
+author: Alexis Parent 
+format: html
+editor: visual
+---
+
+```{r}
+# Set up R 
+rm(list = ls())
+library (tidyverse)
+library(ggplot2)
+library(here)
+```
+
+Chapter 4: Visualizing Your Data
+
+```{r}
+# read in csv file 
+compensation <- read.csv(here("Data", "compensation.csv"))
+
+glimpse(compensation)
+```
+
+```{r}
+# 4.2 ggplot2: a grammer for graphics
+# make a scatterplot 
+ggplot(compensation, aes(x = Root, y = Fruit)) + geom_point()
+
+#aes() defines graph aesthetics 
+```
+
+```{r}
+# scatterplot tutorial
+# how to get rid of grey background
+ggplot(compensation, aes(x = Root, y = Fruit)) + 
+  geom_point() + 
+  theme_bw()
+
+# how to increase size of points 
+ggplot(compensation, aes(x = Root, y = Fruit)) + 
+  geom_point(size = 5) + 
+  theme_bw()
+
+# alter x and y axis labels
+ggplot(compensation, aes(x = Root, y = Fruit)) + 
+  geom_point(size = 5) + 
+  xlab("Root Biomass") +
+  ylab("Fruit Production") +
+  theme_bw()
+
+# how to adjust colors and points to specific groups 
+ggplot(compensation, aes(x = Root, y = Fruit, color = Grazing)) + 
+  geom_point(size = 5) + 
+  xlab("Root Biomass") +
+  ylab("Fruit Production") +
+  theme_bw()
+
+# change shape of points 
+ggplot(compensation, aes(x = Root, y = Fruit, shape = Grazing)) + 
+  geom_point(size = 5) + 
+  xlab("Root Biomass") +
+  ylab("Fruit Production") +
+  theme_bw()
+```
+
+4.3 Box and Whisker Plots
+
+```{r}
+ggplot(compensation, aes(x = Grazing, y = Fruit)) + 
+  geom_boxplot() +
+  geom_point(size = 4, color = 'lightgrey', alpha = 0.5) +
+   xlab("Grazing treatment") +
+  ylab("Fruit Production") 
+  theme_bw()
+```
+
+4.4 Distributions: Making histograms of numeric variables
+
+```{r}
+
+```
