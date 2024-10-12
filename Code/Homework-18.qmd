@@ -14,7 +14,7 @@ library(ggplot2)
 library(here)
 ```
 
-Chapter 4: Visualizing Your Data
+**Chapter 4: Visualizing Your Data**
 
 ```{r}
 # read in csv file 
@@ -79,5 +79,32 @@ ggplot(compensation, aes(x = Grazing, y = Fruit)) +
 4.4 Distributions: Making histograms of numeric variables
 
 ```{r}
+# histogram of fruit production
+ggplot(compensation, aes(x = Fruit)) +
+  geom_histogram()
 
+# 'stat_bin()', using 'bins = 30'
+# pick beter. value with 'binwidth
+
+ggplot(compensation, aes(x = Fruit)) +
+  geom_histogram(bins = 10)
+ggplot(compensation, aes(x = Fruit)) +
+  geom_histogram(bins = 15)
 ```
+
+```{r}
+# Faceting or 'laticing' = producing a matrix of graphs, automatically structured by factor/catagorical variables in your data
+
+ggplot(compensation, aes(x = Fruit)) +
+  geom_histogram(binwidth = 15) +
+  facet_wrap(~Grazing)
+```
+
+4.5 Saving graphs for presentation, docs etc.
+
+-   In the plots tab, there is an export button. Where the file can then be saved as a .png or .tiff, to save as a pdf the figure needs to be copied to a clipboard.
+
+    ```{r}
+     # to save graph 
+    ggsave("ThatCoolHistogramofFruit.png")
+    ```
