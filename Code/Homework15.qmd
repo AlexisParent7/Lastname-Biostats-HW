@@ -1,0 +1,106 @@
+---
+title: "Homework 15"
+format: html
+editor: visual
+---
+
+dplyr for data manipulation.
+
+Top five key verbs.
+
+```{r}
+rm(list=ls())
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(here)
+```
+
+Opening data set
+
+```{r}
+Compensation <- read.csv("/Users/alexisparent/Desktop/BIOSTAT/Parent-Biostats-Homework/Data/compensation.csv")
+#summary stats
+summary(Compensation)
+```
+
+3.2 dplyr verbs
+
+-   The first argument to all dyplr functions is the data frame.
+
+```{r}
+#Subsetting data, getting columns, rows, or subsets of rows
+
+names(Compensation)
+select(Compensation, fruit)
+select(Compensation, -Root)
+
+#grab rows
+slice(Compensation, 2)
+slice(Compensation, 2:10)
+slice(Compensation, c(2, 3, 10))
+
+```
+
+Using filter()
+
+```{r}
+#Look at data frame, do what comes next, then stop looking
+with(Compensation,Fruit > 80)
+
+#Find the rows where it is true that Fruit is >80 return them as data frame
+filter(Compensation, Fruit >80)
+
+#keep rows only with fruit
+filter(Compensation, Fruit >80 | Fruit < 20)
+```
+
+3.3.4 Making sure you can use the subset of data.
+
+```{r}
+#get rows for each condition, and assigns to an object
+lo_hi_fruit <- filter(Compensation, Fruit > 80 | Fruit < 20)
+#run this line to see what the above line saved for later use
+lo_hi_fruit
+```
+
+3.4 Transforming: Using mutate() and head()
+
+```{r}
+#Using mutate() to make new column name and transformation
+#head() to limit # of rows
+head(Compensation)
+#Use mutate
+Compensation <- mutate(Compensation, logFruit = log(Fruit))
+
+#First 6 rows of new compensation
+head(Compensation)
+```
+
+3.5 Sorting using arrange()
+
+```{r}
+# Arrange to out desirable observations/data in order. 
+arrange(Compensation, Fruit)
+```
+
+Tips: Can use more than one dplyr function in one line of code. Piping commands.
+
+```{r}
+#Root values from Fruit > 80 subset
+select(filter(Compensation, Fruit > 80), Root)
+```
+
+3.7 Calculating summary stats about groups in your data.
+
+```{r}
+#METHOD 1: Nested, no pipe
+summarise(
+  group_by(Compensation, Grazing), 
+  meanFruit = mean(Fruit))
+
+#METHOD 2:Pipe, no nesting. 
+Compensation %>%
+  group_by(Grazing) %>%
+  summarise(meanFruit = mean(Fruit))
+```
