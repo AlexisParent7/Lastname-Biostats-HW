@@ -1,0 +1,88 @@
+---
+title: "Homework_21.qmd"
+format: html
+editor: visual
+---
+
+```{r}
+# Setting up R 
+rm(list=ls())
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(here)
+```
+
+Chapter 5: Introducing stats in R
+
+X\^2 contingency table analysis is an analysis of count data. Test of association of two or more categorical variables.
+
+```{r}
+# read in data
+lady <- read.csv(here("Data", "ladybirds.csv"))
+
+# check it out
+glimpse(lady)
+```
+
+Organizing data for plotting and analysis
+
+```{r}
+# organizing
+totals <- lady |> 
+  group_by(Habitat, colour) |> 
+  summarise(total.number = sum(number))
+
+# bar chart to summarise data
+ggplot(totals, aes(x = Habitat, y = total.number, 
+                   fill = colour)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  scale_fill_manual(values = c(black = "black", red = "red"))
+```
+
+identity() = tells ggplot not to calculate anything from data
+
+position = "dodge" pulls bars next to one another
+
+xtabs = transforms data frame into a matrix
+
+```{r}
+# cross tabulate # of columns of counts in totals data frame by these variables
+lady.mat <- xtabs(number ~ Habitat + colour, 
+                  data = lady)
+lady.mat
+```
+
+```{r}
+lady.chi <- chisq.test(lady.mat)
+names(lady.chi)
+
+lady.chi$expected
+```
+
+Two sample T-Test: Comparision of means of two groups of numeric values. Appripriate when sample sizes of both groups are small. Assumes data in each group are normally distributed and their variances are equal.
+
+```{r}
+# read in data
+ozone <- read.csv(here("Data", "ozone.csv"))
+
+# check it out
+glimpse(ozone)
+```
+
+```{r}
+# Plot the data
+ggplot(ozone, aes(x = Ozone)) + 
+  geom_histogram(binwidth = 10) + 
+  facet_wrap(~ Garden.location, ncol = 1) + 
+  theme_bw()
+```
+
+```{r}
+# t test
+t.test(Ozone ~ Garden.location, data = ozone)
+
+var.test(Ozone ~ Garden.location, data = ozone)
+```
+
+Do ozone levels (Ozone) vary as a function of location (Garden.location)
