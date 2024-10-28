@@ -1,0 +1,64 @@
+---
+title: "Homework_23"
+format: html
+editor: visual
+---
+
+```{r}
+# clear R's brain
+rm(list=ls())
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(here)
+```
+
+```{r}
+# read in csv file
+plant_gr <- read.csv(here("Data", "plant.growth.rate.csv"))
+
+glimpse(plant_gr)
+```
+
+```{r}
+# make figure of data
+ggplot(plant_gr, 
+       aes(x = soil.moisture.content, y = plant.growth.rate)) +
+  geom_point() +
+  xlab("Plant Growth Rate (mm/week)") +
+    theme_bw()
+```
+
+```{r}
+# making simple linear regression
+model_pgr <- lm(plant.growth.rate ~ soil.moisture.content, 
+                data = plant_gr)
+
+# reads as 'fit a linear model where we hypothosize that plant growth rate is a function of soil moisture content, using the variables from the plant_gr dataframe
+```
+
+```{r}
+# check assumptions and plot
+library(ggfortifiy)
+autoplot(model_pgr, smooth.colour = NA)
+```
+
+1.  Top left graph: "systematic part of the model. it tells us whether a line is appropriate to fit in the data. If things are wrong, hump shapes or valleys will be apparent, meaning that the structure of the model is wrong.
+2.  Top Right: This evaluates the assumption of normality of the residuals. The dots are the residuals and the dashed line is the expectation under a normal distribution.
+3.  Bottom left: This evaluates the assumption of equal variance. The y-axis is standardized indicator of the variation. Linear models assume that the variance is constant over all predicated values of the response variable. There should be no pattern.
+4.  Bottom right: This evaluates leverage, a tool not only to detect influential data points, ones that move the gradient more than might be expected, but also to detect outliers.
+
+```{r}
+# interpretation
+anova(model_pgr)
+summary(model_pgr)
+```
+
+```{r}
+ggplot(plant_gr, aes(x = soil.moisture.content, 
+                     y = plant.grwoth.rate)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  ylab("Plant Growth Rate (mm/week)") +
+  theme_bw()
+```
