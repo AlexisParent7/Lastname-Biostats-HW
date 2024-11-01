@@ -1,0 +1,89 @@
+---
+title: "Homework 24"
+Name: Alexis Parent 
+Date: 10/31/2024
+format: html
+editor: visual
+---
+
+## Overview
+
+For your homework you will implement a data analysis using a dataset on crab growth measurements.
+
+Set things up (hint: there is a new package to add with `library()`)
+
+```{r}
+# set up R and clear mind 
+rm(list=ls())
+library(tidyverse)
+library(ggplot2)
+library(ggfortify)
+library(here)
+```
+
+## The data
+
+Let's pull in some data appropriate biologists: crab measurements. This dataset includes measurements of farmed crabs.
+
+```{r}
+# read in data and take a look
+crabs <- read.csv(here("Data", "CrabAgePrediction.csv"))
+glimpse(crabs)
+view(crabs)
+```
+
+One of the variables is categorical - let's fix that in the data.
+
+```{r}
+# chnage variables to factor
+crabs$Sex<- as.factor(crabs$Sex)
+levels(crabs$Sex)
+```
+
+## Question
+
+Is there a relationship between height and weight in female crabs?
+
+1.  Extract the data for just female crabs.
+
+    ```{r}
+    # take data from just female crabs 
+    female_crabs <- crabs %>% filter(Sex == "F") 
+
+    view(female_crabs)
+    ```
+
+2.  Examine the response and predictor variables and use the flow chart from class to decide the appropriate statistical analysis (choose from: chi-square, 2-sample t-test or linear regression). Explain your answer here:
+
+    ```{r}
+    # The response variable is height and weight. 
+    # The predicator variable is if the crab is male of female. 
+    # The appropriate statistical analysis would be a chi-square test,    because both crab height and weight are ratio data. Furthermore, there are also no more than two groups to compare. 
+    ```
+
+3.  Work through the data analysis **following all of the steps provided in chapter 5 of your book**. You may use class notes or homework keys as a guide.
+
+    ```{r}
+    female_crabs %>% 
+      group_by(Height, Weight)
+
+    glimpse(female_crabs)
+
+    # make a figure 
+    ggplot(female_crabs, aes(x = factor(Height), y = Weight)) +
+     geom_bar(stat = "identity", fill = "blue") 
+
+    # X2 contingancy table analysis
+    female_crabs.mat <- xtabs(Weight ~ Height, 
+                              data = female_crabs)
+      
+    ```
+
+```{r}
+# Conduct test!!
+chisq.test(female_crabs.mat)
+
+# Return values
+female_crabs.chi <- chisq.test(female_crabs.mat)
+names(female_crabs.chi)
+```
