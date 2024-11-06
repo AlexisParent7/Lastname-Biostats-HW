@@ -1,0 +1,58 @@
+---
+title: "Homework-26"
+format: html
+editor: visual
+---
+
+```{r}
+# clear R's brain
+rm(list=ls())
+library(tidyverse)
+library(ggplot2)
+library(ggfortify)
+library(here)
+```
+
+```{r}
+# read in csv file
+peas <- read.csv(here("Data", "s_r_pea_sections.csv"))
+
+view(peas)
+```
+
+```{r}
+# change to factor variable 
+peas$Treatment <- as.factor(peas$Treatment)
+
+```
+
+```{r}
+# Go through the steps of a data analysis. Follow the plot (and guess the answers) --> build model --> test assumptions --> interpret model approach.
+
+# build model
+ggplot(peas, aes(Treatment, pea_section_length_ou)) + 
+    geom_boxplot() + 
+    theme_bw() 
+
+#test assumptions
+model_grow <- lm(pea_section_length_ou ~ Treatment, data = peas)
+
+autoplot(model_grow, smooth.colour = NA)
+
+# compare each group with the control. Control is the intercept.
+anova(model_grow)
+
+
+```
+
+Interpretation: The treatment has 4 degrees of freedom. There is a significant difference between treatment level and pea section length, with a p value of 6.737e-16, F = 49.368). As a result, we can reject the null hypothesis as the treatment effect is statistically significant.
+
+```{r}
+# Perform Tukey HSD test
+anova_result <- aov(pea_section_length_ou ~ Treatment, data = peas)
+
+tukey_result <- TukeyHSD(anova_result)
+
+# View the results
+summary(tukey_result)
+```
