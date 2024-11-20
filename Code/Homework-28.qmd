@@ -1,0 +1,140 @@
+---
+title: "Homework-28.qmd"
+Name: Alexis Parent 
+Date: 11/19/2024
+format: html
+editor: visual
+---
+
+```{r}
+# set up R 
+rm(list = ls())
+library(tidyverse)
+library(ggfortify) 
+library(ggplot2)
+library(gridExtra)
+library(here)
+```
+
+```{r}
+compensation <- read.csv(here("Data", "compensation.csv"))
+```
+
+Chapter 8: Pimping Your Plots: Scales and Themes in ggplot2
+
+First, we are starting with the scatter plot of Fruit vs. Root
+
+```{r}
+# BASE scatterplot
+eg_scatter <- 
+  ggplot(data = compensation, aes(x = Root, y = Fruit)) +
+  geom_point()
+
+# BASE box-and-whiskers plot
+eg_box <- 
+  ggplot(data = compensation, aes (x = Grazing, y = Fruit)) + 
+  geom_boxplot()
+```
+
+Place many-faceted figures onto the same page
+
+```{r}
+grid.arrange(eg_scatter, eg_box, nrow = 1)
+```
+
+8.4: Axis labels, axis limits, and annotation
+
+Using the scale () and theme() function
+
+```{r}
+# using xlab and ylab
+eg_scatter + xlab("Root Biomass") + ylab("Fruit Production")
+
+# title 
+eg_scatter + ggtitle("My SUPERB title")
+
+# combine the two
+eg_scatter + labs(title = "My useless title", 
+                  x = "Root Biomass", y = "Fruit Production")
+```
+
+Now we are changing the range of the x and y axis
+
+```{r}
+eg_scatter + xlim(0, 20) + ylim(0, 140)
+```
+
+Next we are going to put custom text within the figure
+
+```{r}
+eg_scatter + 
+  annotate("text", x = c(6,8), y = c(105, 25), 
+           label = c("text up here ...","...and text down here"))
+```
+
+Using the scale function
+
+```{r}
+eg_scatter + scale_x_continuous(limits = c(4, 11), breaks = 4:11)
+
+# changing the colors 
+
+ggplot(data = compensation, aes(x = Root, y = Fruit, color = Grazing)) + geom_point() + 
+  scale_color_manual(values = c(Grazed = "brown", Ungrazed = "green"))
+```
+
+Next we can transform the x and y axis
+
+```{r}
+eg_box + 
+  scale_y_continuous(breaks = seq(from = 10, to = 150, by = 20), 
+trans = "log10")
+```
+
+Next we will use the theme function to adjust non-aesthetic graph pieces + theme adjustments
+
+```{r}
+eg_scatter + 
+  theme(
+    panel.background = element_rect(fill = NA, color = "black"), 
+    panel.grid.minor = element_blank(), 
+    panel.grid.major = element_line(color = "lightblue")
+  )
+```
+
+Theme() syntax about axis titles and tick marks
+
+```{r}
+eg_box + 
+  theme(
+    axis.title.x = element_text(color = "cornflowerblue",
+                                size = rel(2)), 
+    axis.text.x = element_text(angle = 45, size = 13, vjust = 0.5)
+  )
+# vjust turns the names sideways 
+```
+
+Discrete axis customizations using scale_x_discrete() and scale_y_discrete()
+
+```{r}
+# altering name levels 
+eg_box + scale_x_discrete(limits = c("Ungrazed", "Grazed"), 
+                          labels = c("Control", "Grazed"))
+```
+
+Next we are going to customize legends/keys
+
+```{r}
+ggplot(compensation, aes(x = Root, y = Fruit, color = Grazing)) + 
+  geom_point() + 
+  theme(legend.key = element_rect(fill = NA))
+
+#code for if we dont want a key at all 
+ggplot(compensation, aes(x = Root, y = Fruit, color = Grazing)) + 
+  geom_point() + 
+  theme(legend.position = "none")
+```
+
+Summary:
+
+We used functions scale() and theme() changing the looks of different graphs.
